@@ -131,13 +131,15 @@ export const getRandomTone = (tone) => {
   if (tone === "good") {
     const tone = getRandomItem(goodTones);
     const emoji = getRandomItem(goodEmojis);
-    return `${emoji}`;
+    // return `${emoji}`;
+    return "⬆️"
   }
 
   if (tone === "bad") {
     const tone = getRandomItem(badTones);
     const emoji = getRandomItem(badEmojis);
-    return `${emoji}`;
+    // return `${emoji}`;
+    return "⬇️"
   }
 
   const invalidTone = "Invalid tone category. Please provide 'bad' or 'good'.";

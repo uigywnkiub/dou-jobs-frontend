@@ -46,7 +46,7 @@ let browser;
 
     const diffMsg = `<code>${
       isDiffPositive ? `${getRandomTone("good")}` : `${getRandomTone("bad")}`
-    }</code>\n\nJob openings have <b>${diffAspect}</b> by <b>${diffCounter}</b>\nThe total is <b>${counter}</b>\n\n${
+    }</code>\nJob openings have <b>${diffAspect}</b> by <b>${diffCounter}</b>\nThe total is <b>${counter}</b>\n\n${
       isDiffPositive
         ? `<i><a href="https://jobs.dou.ua/vacancies/?category=Front%20End&exp=1-3">Apply Now</a></i>`
         : ""
