@@ -5,6 +5,8 @@ import { sendTgMsg } from "./bot.js";
 import { getRandomTone } from "./textTones.js";
 dotenv.config();
 
+const PARSE_URL = process.env.PARSE_URL;
+
 let browser;
 
 (async () => {
@@ -15,10 +17,7 @@ let browser;
       userDataDir: "./userDataCache",
     });
     const page = await browser.newPage();
-    await page.goto(
-      "https://jobs.dou.ua/vacancies/?category=Front%20End&exp=1-3",
-      { timeout: 0 }
-    );
+    await page.goto(PARSE_URL, { timeout: 0 });
     const element = await page.$("h1");
     const title = await element.evaluate((el) => el.textContent);
     const counter = parseInt(title.match(/\d+/)[0]);
@@ -44,17 +43,24 @@ let browser;
     const diffAspect = prevCounter < counter ? "increased" : "decreased";
     const isDiffPositive = prevCounter < counter;
 
-    const diffMsg = `<code>${
-      isDiffPositive ? `${getRandomTone("good")}` : `${getRandomTone("bad")}`
-    }</code>\nJob openings have <b>${diffAspect}</b> by <b>${diffCounter}</b>\nThe total is <b>${counter}</b>\n\n${
-      isDiffPositive
-        ? `<i><a href="https://jobs.dou.ua/vacancies/?category=Front%20End&exp=1-3">Apply Now</a></i>`
-        : ""
-    }`;
+    let diffMsg = "";
+
+    // const diffMsg = `<code>${
+    //   isDiffPositive ? `${getRandomTone("good")}` : `${getRandomTone("bad")}`
+    // }</code>\nJob openings have <b>${diffAspect}</b> by <b>${diffCounter}</b>\nThe total is <b>${counter}</b>\n\n${
+    //   isDiffPositive
+    //     ? `<i><a href="https://jobs.dou.ua/vacancies/?category=Front%20End&exp=1-3">Apply Now</a></i>`
+    //     : ""
+    // }`;
+
+    if (isDiffPositive) {
+      diffMsg = `${getRandomTone(
+        "good"
+      )} Job openings have ${diffAspect} by ${diffCounter}\nThe total is ${counter}\n\n<i><a href="${PARSE_URL}">Apply Now</a></i>`;
+      sendTgMsg(diffMsg);
+    }
 
     await db.collection.updateOne({ _id: db.objectId }, { $set: { counter } });
-
-    sendTgMsg(diffMsg);
   } catch (error) {
     console.error(error);
     process.exit(1);
