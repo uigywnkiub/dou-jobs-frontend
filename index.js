@@ -20,7 +20,7 @@ let browser;
     await page.goto(PARSE_URL, { timeout: 0 });
     const element = await page.$("h1");
     const title = await element.evaluate((el) => el.textContent);
-    const counter = parseInt(title.match(/\d+/)[0]);
+    const counter = parseInt(title.match(/\d+/)[0])  +1;
 
     const { counter: prevCounter } = await db.collection.findOneAndUpdate(
       { _id: db.objectId },
@@ -56,7 +56,7 @@ let browser;
     if (isDiffPositive) {
       diffMsg = `${getRandomTone(
         "good"
-      )} Job openings have ${diffAspect} by ${diffCounter}\nThe total is ${counter}\n\n<i><a href="${PARSE_URL}">Apply Now</a></i>`;
+      )}\nJob openings have <b>${diffAspect}</b> by <b>${diffCounter}</b>\nThe total is <b>${counter}</b>\n\n<i><a href="${PARSE_URL}">Apply Now</a></i>`;
       sendTgMsg(diffMsg);
     }
 
