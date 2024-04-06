@@ -12,7 +12,8 @@ on:
   schedule:
     # every hour
     # - cron: "0 * * * *"
-    - cron: "0 8,20 * * *"
+    # two times per day, in the morning at 7 and the evening at 19
+    - cron: "0 7,19 * * *"
 
 jobs:
   parse:
