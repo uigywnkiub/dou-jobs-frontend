@@ -30,7 +30,17 @@ jobs:
           node-version: 'lts/*'
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: yarn install --immutable --ignore-scripts
+
+      - name: Clear and setup Puppeteer cache
+        shell: powershell
+        run: |
+          $cacheDir = "$env:USERPROFILE\.cache\puppeteer"
+          if (Test-Path $cacheDir) {
+            Remove-Item -Path $cacheDir -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Output "Cleared cache at $cacheDir"
+          }
+          yarn puppeteer browsers install chrome
 
       - name: Run yarn script with envs
         run: yarn start
