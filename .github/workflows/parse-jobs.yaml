@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable --ignore-scripts
 
-      - name: Clear and setup Puppeteer cache
+      - name: Install Chrome browser
         shell: powershell
         run: |
           $cacheDir = "$env:USERPROFILE\.cache\puppeteer"
@@ -40,7 +40,7 @@ jobs:
             Remove-Item -Path $cacheDir -Recurse -Force -ErrorAction SilentlyContinue
             Write-Output "Cleared cache at $cacheDir"
           }
-          yarn puppeteer browsers install chrome
+          npx @puppeteer/browsers install chrome
 
       - name: Run yarn script with envs
         run: yarn start
