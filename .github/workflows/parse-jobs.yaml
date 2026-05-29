@@ -42,7 +42,18 @@ jobs:
           }
 
       - name: Install Chromium
-        run: npx puppeteer browsers install chrome@122
+        shell: powershell
+        run: |
+          Write-Output "Installing Chrome..."
+          npx puppeteer browsers install chrome@122
+          Write-Output "Installation complete"
+          $chromePath = "$env:USERPROFILE\.cache\puppeteer\chrome\win64-122.0.6261.57\chrome-win64\chrome.exe"
+          Write-Output "Expected path: $chromePath"
+          Write-Output "Path exists: $(Test-Path $chromePath)"
+          if (Test-Path $chromePath) {
+            Write-Output "Chrome found at: $chromePath"
+            echo "CHROME_PATH=$chromePath" >> $env:GITHUB_ENV
+          }
 
       - name: Run yarn script with envs
         run: yarn start
