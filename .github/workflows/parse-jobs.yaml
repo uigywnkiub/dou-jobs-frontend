@@ -40,14 +40,13 @@ jobs:
             Remove-Item -Path $cacheDir -Recurse -Force -ErrorAction SilentlyContinue
             Write-Output "Cleared cache at $cacheDir"
           }
-          $output = npx @puppeteer/browsers install chrome 2>&1
-          Write-Output $output
+          npx @puppeteer/browsers install chrome
           
           # Try to find chrome.exe in the cache directory
           $chromeExe = Get-ChildItem -Path $cacheDir -Recurse -Filter "chrome.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($chromeExe) {
             Write-Output "Found Chrome at: $($chromeExe.FullName)"
-            echo "CHROME_PATH=$($chromeExe.FullName)" >> $env:GITHUB_ENV
+            Add-Content -Path $env:GITHUB_ENV -Value "CHROME_PATH=$($chromeExe.FullName)"
           } else {
             Write-Output "WARNING: chrome.exe not found after install"
             # List what was actually created
