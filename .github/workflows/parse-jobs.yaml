@@ -33,11 +33,16 @@ jobs:
         run: yarn install --immutable
 
       - name: Clear Puppeteer cache
-        run: rmdir /s /q C:\Users\runneradmin\.cache\puppeteer || true
-        shell: cmd
+        shell: powershell
+        run: |
+          $cacheDir = "$env:USERPROFILE\.cache\puppeteer"
+          if (Test-Path $cacheDir) {
+            Remove-Item -Path $cacheDir -Recurse -Force
+            Write-Output "Cleared cache at $cacheDir"
+          }
 
       - name: Install Chromium
-        run: npx puppeteer browsers install chrome
+        run: npx puppeteer browsers install chrome@122
 
       - name: Run yarn script with envs
         run: yarn start
