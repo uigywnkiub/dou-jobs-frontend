@@ -40,7 +40,22 @@ jobs:
             Remove-Item -Path $cacheDir -Recurse -Force -ErrorAction SilentlyContinue
             Write-Output "Cleared cache at $cacheDir"
           }
-          npx @puppeteer/browsers install chrome
+          $output = npx @puppeteer/browsers install chrome 2>&1
+          Write-Output $output
+          
+          # Try to find chrome.exe in the cache directory
+          $chromeExe = Get-ChildItem -Path $cacheDir -Recurse -Filter "chrome.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($chromeExe) {
+            Write-Output "Found Chrome at: $($chromeExe.FullName)"
+            echo "CHROME_PATH=$($chromeExe.FullName)" >> $env:GITHUB_ENV
+          } else {
+            Write-Output "WARNING: chrome.exe not found after install"
+            # List what was actually created
+            if (Test-Path $cacheDir) {
+              Write-Output "Cache directory contents:"
+              Get-ChildItem -Path $cacheDir -Recurse -Force | Select-Object -ExpandProperty FullName
+            }
+          }
 
       - name: Run yarn script with envs
         run: yarn start
