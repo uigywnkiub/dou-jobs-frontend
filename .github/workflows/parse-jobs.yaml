@@ -32,36 +32,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Clear Puppeteer cache
-        shell: powershell
-        run: |
-          $cacheDir = "$env:USERPROFILE\.cache\puppeteer"
-          if (Test-Path $cacheDir) {
-            Remove-Item -Path $cacheDir -Recurse -Force
-            Write-Output "Cleared cache at $cacheDir"
-          }
-
-      - name: Install Chromium
-        shell: powershell
-        run: |
-          Write-Output "Installing Chrome..."
-          npx puppeteer browsers install chrome@122
-          Write-Output "Installation complete"
-          $cacheDir = "$env:USERPROFILE\.cache\puppeteer"
-          Write-Output "Cache directory contents:"
-          if (Test-Path $cacheDir) {
-            Get-ChildItem -Path $cacheDir -Recurse -Force | Select-Object -ExpandProperty FullName
-            $chromeExe = Get-ChildItem -Path $cacheDir -Recurse -Filter "chrome.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($chromeExe) {
-              Write-Output "Found chrome.exe at: $($chromeExe.FullName)"
-              echo "CHROME_PATH=$($chromeExe.FullName)" >> $env:GITHUB_ENV
-            } else {
-              Write-Output "ERROR: chrome.exe not found in cache directory"
-            }
-          } else {
-            Write-Output "ERROR: Cache directory does not exist at $cacheDir"
-          }
-
       - name: Run yarn script with envs
         run: yarn start
         env:
