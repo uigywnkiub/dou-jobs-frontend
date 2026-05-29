@@ -32,6 +32,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Clear Puppeteer cache
+        run: rmdir /s /q C:\Users\runneradmin\.cache\puppeteer || true
+        shell: cmd
+
       - name: Install Chromium
         run: npx puppeteer browsers install chrome
 
